@@ -81,7 +81,15 @@ def get_listing_details(listing_id) -> dict:
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    d = {}
+    html = ""
+    with open(os.path.join("html_files", f"listing_{listing_id}.html"), encoding="utf-8-sig") as f:
+        html = f.read()
+    soup = BeautifulSoup(html, 'html.parser')
+    policy_number_header = soup.find_all("span", {"class": "ll4r2nl dir dir-ltr"})
+    policy_number = policy_number_header[0].text if len(policy_number_header) > 0 else "N/A"
+    host_type = "Superhost" if len(soup.find_all("span", {"class": "_1mhorg9"})) > 0 else "regular"
+    return d
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
