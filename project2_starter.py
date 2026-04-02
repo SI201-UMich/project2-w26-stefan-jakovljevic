@@ -86,9 +86,15 @@ def get_listing_details(listing_id) -> dict:
     with open(os.path.join("html_files", f"listing_{listing_id}.html"), encoding="utf-8-sig") as f:
         html = f.read()
     soup = BeautifulSoup(html, 'html.parser')
-    policy_number_header = soup.find_all("span", {"class": "ll4r2nl dir dir-ltr"})
-    policy_number = policy_number_header[0].text if len(policy_number_header) > 0 else "N/A"
+    # policy number
+    policy_number = soup.find("li", {"class": "f19phm7j dir dir-ltr"})
+    policy_number = policy_number.find_all("span")[0].text
+    # host type
     host_type = "Superhost" if len(soup.find_all("span", {"class": "_1mhorg9"})) > 0 else "regular"
+    # host name
+
+
+    print(policy_number, host_type)
     return d
     # ==============================
     # YOUR CODE ENDS HERE
@@ -220,6 +226,7 @@ class TestCases(unittest.TestCase):
         html_list = ["467507", "1550913", "1944564", "4614763", "6092596"]
 
         # TODO: Call get_listing_details() on each listing id above and save results in a list.
+        get_listing_details("467507")
 
         # TODO: Spot-check a few known values by opening the corresponding listing_<id>.html files.
         # 1) Check that listing 467507 has the correct policy number "STR-0005349".
