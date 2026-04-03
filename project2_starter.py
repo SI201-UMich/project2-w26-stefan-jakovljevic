@@ -270,7 +270,7 @@ def validate_policy_numbers(data) -> list[str]:
     for row in data:
         listing_id = row[1]
         policy_number = row[2]
-        if policy_number in ("Pending", "Exempt"):
+        if policy_number in ("Pending", "Exempt", "pending", "exempt"):
             continue
         if not re.match(r"^(20\d{2}-\d{6}STR|STR-\d{7})$", policy_number):
             invalid_ids.append(listing_id)
