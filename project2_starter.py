@@ -1,13 +1,17 @@
 # SI 201 HW4 (Library Checkout System)
-# Your name:
-# Your student id:
-# Your email:
+# Your name: Stefan Jakovljevic
+# Your student id: 35306972
+# Your email: jakovlje@umich.edu
 # Who or what you worked with on this homework (including generative AI like ChatGPT):
 # If you worked with generative AI also add a statement for how you used it.
 # e.g.:
 # Asked ChatGPT for hints on debugging and for suggestions on overall code structure
 #
+# I did not use ChatGPT or any GenAI for this assignment.
+#
 # Did your use of GenAI on this assignment align with your goals and guidelines in your Gen AI contract? If not, why?
+#
+# Yes, it does. I told myself I was not going to use it.
 #
 # --- ARGUMENTS & EXPECTED RETURN VALUES PROVIDED --- #
 # --- SEE INSTRUCTIONS FOR FULL DETAILS ON METHOD IMPLEMENTATION --- #
@@ -92,9 +96,45 @@ def get_listing_details(listing_id) -> dict:
     # host type
     host_type = "Superhost" if len(soup.find_all("span", {"class": "_1mhorg9"})) > 0 else "regular"
     # host name
+    host_div = soup.find_all("div", {"class": "tehcqxo dir dir-ltr"})[0]
+    host_name = host_div.find_all("h2", {"class" : "hnwb2pb dir dir-ltr"})[0]
+    host_name = host_name.text if host_name else None
+    match = re.findall("Hosted by (.+)", host_name)
+    if match:
+        host_name = match[0]
+    # room type
+    room_type_div = soup.find("h2", {"class": "_14i3z6h"})
+    room_type_text = room_type_div.text if room_type_div else ""
 
+    text = room_type_text.lower()
 
-    print(policy_number, host_type)
+    if "private" in text:
+        room_type = "Private Room"
+    elif "shared" in text:
+        room_type = "Shared Room"
+    else:
+        room_type = "Entire Room"
+    # location rating
+    location_rating = 0.0
+    location_str = soup.find("span", {"class": "_17p6nbba"})
+    if location_str:
+        location_str = location_str.text
+        match = re.search(r"\d+\.\d+", location_str)
+        if match:
+            try:
+                location_rating = float(match.group())
+            except:
+                location_rating = 0.0
+
+    d[listing_id] = {
+        "policy_number": policy_number,
+        "host_type": host_type,
+        "host_name": host_name,
+        "room_type": room_type,
+        "location_rating": location_rating
+    }
+
+    # print(policy_number, host_type, host_name, room_type, location_rating)
     return d
     # ==============================
     # YOUR CODE ENDS HERE
@@ -226,7 +266,7 @@ class TestCases(unittest.TestCase):
         html_list = ["467507", "1550913", "1944564", "4614763", "6092596"]
 
         # TODO: Call get_listing_details() on each listing id above and save results in a list.
-        get_listing_details("467507")
+        get_listing_details("1944564")
 
         # TODO: Spot-check a few known values by opening the corresponding listing_<id>.html files.
         # 1) Check that listing 467507 has the correct policy number "STR-0005349".
