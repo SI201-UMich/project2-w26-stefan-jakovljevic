@@ -233,7 +233,23 @@ def avg_location_rating_by_room_type(data) -> dict:
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    totals = {}
+    counts = {}
+    for row in data:
+        room_type = row[5]
+        rating = row[6]
+        if rating == 0.0:
+            continue
+        if room_type not in totals:
+            totals[room_type] = 0.0
+            counts[room_type] = 0
+        totals[room_type] += rating
+        counts[room_type] += 1
+    d = {}
+    for room_type in totals:
+        d[room_type] = totals[room_type] / counts[room_type]
+
+    return d
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
@@ -254,7 +270,15 @@ def validate_policy_numbers(data) -> list[str]:
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    invalid_ids = []
+    for row in data:
+        listing_id = row[1]
+        policy_number = row[2]
+        if policy_number in ("Pending", "Exempt"):
+            continue
+        if not re.match(r"^(20\d{2}-\d{6}STR|STR-\d{7})$", policy_number):
+            invalid_ids.append(listing_id)
+    return invalid_ids
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
