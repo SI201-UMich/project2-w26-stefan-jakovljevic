@@ -93,6 +93,11 @@ def get_listing_details(listing_id) -> dict:
     # policy number
     policy_number = soup.find("li", {"class": "f19phm7j dir dir-ltr"})
     policy_number = policy_number.find_all("span")[0].text
+    # horrible code but what are we gonna do
+    if policy_number == "pending":
+        policy_number = "Pending"
+    elif policy_number == "exempt":
+        policy_number = "Exempt"
     # host type
     host_type = "Superhost" if len(soup.find_all("span", {"class": "_1mhorg9"})) > 0 else "regular"
     # host name
