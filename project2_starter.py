@@ -7,11 +7,11 @@
 # e.g.:
 # Asked ChatGPT for hints on debugging and for suggestions on overall code structure
 #
-# I did not use ChatGPT or any GenAI for this assignment.
+# I did not use ChatGPT or any GenAI for this assignment. UNTIL I did the extra credit problem, and did not know what to do when I got a 429 error code.
 #
 # Did your use of GenAI on this assignment align with your goals and guidelines in your Gen AI contract? If not, why?
 #
-# Yes, it does. I told myself I was not going to use it.
+# Yes, it does. I told myself I was not going to use it UNLESS i really had to. I am proud of my AI usage for the project.
 #
 # --- ARGUMENTS & EXPECTED RETURN VALUES PROVIDED --- #
 # --- SEE INSTRUCTIONS FOR FULL DETAILS ON METHOD IMPLEMENTATION --- #
@@ -287,6 +287,7 @@ def validate_policy_numbers(data) -> list[str]:
 
 # EXTRA CREDIT
 def google_scholar_searcher(query):
+    # idk if you guys wanted j
     """
     EXTRA CREDIT
 
@@ -299,7 +300,27 @@ def google_scholar_searcher(query):
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+
+    # used ai for this
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    url = f"https://scholar.google.com/scholar?q={query}"
+    res = requests.get(url, headers=headers)
+    # print(res.content)
+
+    if res.status_code == 200:
+        l = []
+        soup = BeautifulSoup(res.content, "html.parser")
+        tags = soup.find_all("h3", {"class": "gs_rt"})
+        for tag in tags:
+            text = tag.text
+            l.append(re.sub(r"\[[^\]]+\]", "", text).strip())
+        # print(l)
+        return l
+    else:
+        return []
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
@@ -379,6 +400,12 @@ class TestCases(unittest.TestCase):
 def main():
     detailed_data = create_listing_database(os.path.join("html_files", "search_results.html"))
     output_csv(detailed_data, "airbnb_dataset.csv")
+    # example
+    titles = google_scholar_searcher("airbnb")
+    print("********************************")
+    print("The titles from the airbnb query")
+    print(titles)
+    print("********************************")
 
 
 if __name__ == "__main__":
